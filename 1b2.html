@@ -1,0 +1,392 @@
+ <!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Number Guessing Game</title>
+
+    <style>
+
+        :root {
+
+            --bg-light: #f0f0f0;
+
+            --text-light: #000;
+
+            --bg-dark: #2b2b2b;
+
+            --text-dark: #fff;
+
+            --box-bg-light: #ffffff;
+
+            --box-bg-dark: #3a3a3a;
+
+        }
+
+
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background-color: var(--bg-light);
+
+            color: var(--text-light);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            height: 100vh;
+
+            margin: 0;
+
+            transition: background-color 0.5s, color 0.5s;
+
+        }
+
+
+
+        .game-container {
+
+            background-color: var(--box-bg-light);
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+            text-align: center;
+
+            transition: background-color 0.5s;
+
+        }
+
+
+
+        h1 {
+
+            margin-bottom: 20px;
+
+        }
+
+
+
+        input[type="number"] {
+
+            padding: 10px;
+
+            width: 80%;
+
+            margin: 10px 0;
+
+            border-radius: 5px;
+
+            border: 2px solid #ccc;
+
+            transition: border-color 0.3s;
+
+        }
+
+
+
+        input[type="number"]:focus {
+
+            border-color: #007bff;
+
+        }
+
+
+
+        button {
+
+            padding: 10px 20px;
+
+            background-color: #007bff;
+
+            border: none;
+
+            color: white;
+
+            font-size: 16px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            margin: 10px;
+
+            transition: background-color 0.3s, transform 0.3s;
+
+        }
+
+
+
+        button:hover {
+
+            background-color: #0056b3;
+
+            transform: scale(1.05);
+
+        }
+
+
+
+        .result {
+
+            margin-top: 20px;
+
+            font-size: 18px;
+
+        }
+
+
+
+        .theme-toggle {
+
+            position: absolute;
+
+            top: 20px;
+
+            right: 20px;
+
+            cursor: pointer;
+
+            padding: 10px;
+
+            background-color: #007bff;
+
+            color: white;
+
+            border-radius: 50%;
+
+            transition: transform 0.3s;
+
+        }
+
+
+
+        .theme-toggle:hover {
+
+            transform: rotate(360deg);
+
+        }
+
+
+
+        .restart-btn {
+
+            display: none;
+
+            padding: 10px 20px;
+
+            background-color: #28a745;
+
+            border: none;
+
+            color: white;
+
+            font-size: 16px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            margin: 10px;
+
+            transition: background-color 0.3s, transform 0.3s;
+
+        }
+
+
+
+        .restart-btn:hover {
+
+            background-color: #218838;
+
+            transform: scale(1.05);
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="game-container">
+
+        <h1>Guess the Number!</h1>
+
+        <p>Pick a number between 0 and 100. You have 5 chances!</p>
+
+        <input type="number" id="guessInput" placeholder="Enter your guess">
+
+        <br>
+
+        <button id="submitBtn">Submit</button>
+
+        <button id="restartBtn" class="restart-btn">Restart</button>
+
+        <div id="result" class="result"></div>
+
+    </div>
+
+
+
+    <div id="themeToggle" class="theme-toggle">🌙</div>
+
+
+
+    <script>
+
+        let randomNumber = Math.floor(Math.random() * 101);
+
+        let attempts = 5;
+
+
+
+        const guessInput = document.getElementById('guessInput');
+
+        const submitBtn = document.getElementById('submitBtn');
+
+        const restartBtn = document.getElementById('restartBtn');
+
+        const resultDiv = document.getElementById('result');
+
+        const themeToggle = document.getElementById('themeToggle');
+
+        let isDark = false;
+
+
+
+        function checkGuess() {
+
+            const userGuess = parseInt(guessInput.value);
+
+
+
+            if (isNaN(userGuess)) {
+
+                resultDiv.textContent = "Please enter a valid number!";
+
+                return;
+
+            }
+
+
+
+            if (attempts > 0) {
+
+                if (userGuess === randomNumber) {
+
+                    resultDiv.textContent = "*********Congratulations! you won!***********";
+
+                    endGame();
+
+                } else if (userGuess > randomNumber) {
+
+                    resultDiv.textContent = "Too high! Try again.";
+
+                } else {
+
+                    resultDiv.textContent = "Too low! Try again.";
+
+                }
+
+                attempts--;
+
+            } else {
+
+                resultDiv.textContent = `Game over! The correct number was ${randomNumber}.`;
+
+                endGame();
+
+            }
+
+        }
+
+
+
+        function endGame() {
+
+            guessInput.disabled = true;
+
+            submitBtn.disabled = true;
+
+            restartBtn.style.display = 'inline-block';
+
+        }
+
+
+
+        function restartGame() {
+
+            randomNumber = Math.floor(Math.random() * 101);
+
+            attempts = 5;
+
+            guessInput.disabled = false;
+
+            submitBtn.disabled = false;
+
+            guessInput.value = '';
+
+            resultDiv.textContent = '';
+
+            restartBtn.style.display = 'none';
+
+        }
+
+
+
+        function toggleTheme() {
+
+            if (isDark) {
+
+                document.body.style.backgroundColor = 'var(--bg-light)';
+
+                document.body.style.color = 'var(--text-light)';
+
+                document.querySelector('.game-container').style.backgroundColor = 'var(--box-bg-light)';
+
+                themeToggle.textContent = '🌙';
+
+            } else {
+
+                document.body.style.backgroundColor = 'var(--bg-dark)';
+
+                document.body.style.color = 'var(--text-dark)';
+
+                document.querySelector('.game-container').style.backgroundColor = 'var(--box-bg-dark)';
+
+                themeToggle.textContent = '☀️';
+
+            }
+
+            isDark = !isDark;
+
+        }
+
+
+
+        submitBtn.addEventListener('click', checkGuess);
+
+        restartBtn.addEventListener('click', restartGame);
+
+        themeToggle.addEventListener('click', toggleTheme);
+
+    </script>
+
+</body>
+
+</html>
+
